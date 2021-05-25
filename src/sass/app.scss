@@ -1,0 +1,26 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app {
+  font-size: 16px;
+  max-width: 62.5rem;
+
+  img {
+    width: 6.25rem;
+  }
+
+  a:focus {
+    outline: none !important;
+  }
+
+  table {
+    tbody {
+      td {
+        word-break: break-all;
+      }
+    }
+  }
+}

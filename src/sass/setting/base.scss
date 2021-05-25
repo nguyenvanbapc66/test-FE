@@ -1,0 +1,17 @@
+// color
+$color__black: #000;
+$color__gray: #424b5a;
+$color__blue: #4C84BF;
+$color__white: #fff;
+
+$color__outline: #e0e0e0;
+
+// border
+$border__radius--4: 4px;
+
+// button
+$button__color--detail: $color__gray;
+$button__radius: $border__radius--4;
+
+// outline
+$outline__button: 1px solid $color__outline;
