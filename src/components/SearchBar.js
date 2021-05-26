@@ -1,14 +1,21 @@
 import React from "react";
+import SearchBarContext from "../contexts/SearchBarContext";
 
-function SearchBar({ type, placeholder, className, searchItem }) {
+function SearchBar({ type, placeholder, className }) {
   return (
     <div className="d-flex justify-content-center">
-      <input
-        type={type}
-        placeholder={placeholder}
-        className={className}
-        onChange={(e) => searchItem(e.target.value)}
-      />
+      <SearchBarContext.Consumer>
+        {(searchItem) => (
+          <input
+            type={type}
+            placeholder={placeholder}
+            className={className}
+            onChange={(e) => {
+              searchItem(e.target.value);
+            }}
+          />
+        )}
+      </SearchBarContext.Consumer>
     </div>
   );
 }

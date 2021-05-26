@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
 import "./sass/app.scss";
 import SearchBar from "./components/SearchBar";
@@ -6,15 +6,18 @@ import Articles from "./Pages/Articles";
 import Paginate from "./components/Paginate";
 import _ from "lodash";
 
+import SearchBarProvider from "./components/providers/SearchBarProvider";
+import ArticlesProvider from "./components/providers/ArticlesProvider";
+import PaginateProvider from "./components/providers/PaginateProvider";
+
 function App() {
   const [articles, setArticles] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [articlesPerPage] = useState(10);
-  const [isDecrease, setIsDecrease] = useState(true);
-  const [search, setSearch] = useState("");
+  const [isDecrease, setIsDecrease] = useState(false);
 
   const url =
-    "https://newsapi.org/v2/everything?q=tesla&from=2021-04-25&sortBy=publishedAt&apiKey=5da0353ef23e4e779f2bba0c3114ae87";
+    "https://newsapi.org/v2/everything?q=tesla&apiKey=5da0353ef23e4e779f2bba0c3114ae87";
   useEffect(() => {
     const fetchApi = async () => {
       await Axios.get(url).then((res) => {
@@ -41,13 +44,12 @@ function App() {
     let newArticles = articles;
 
     if (isDecrease) {
-      setArticles(_.orderBy(newArticles, ["author"], ["asc"]));
+      setArticles(_.orderBy(newArticles, ["publishedAt"], ["asc"]));
     } else {
-      setArticles(_.orderBy(newArticles, ["author"], ["desc"]));
+      setArticles(_.orderBy(newArticles, ["publishedAt"], ["desc"]));
     }
 
     setIsDecrease(!isDecrease);
-    console.log(isDecrease);
   };
 
   // Search
@@ -64,23 +66,38 @@ function App() {
 
   return (
     <div className="container col-lg-12 mt-5 app">
-      <SearchBar
-        className="mb-3 w-50 form-control"
-        type="text"
-        placeholder="Search..."
-        searchItem={searchItem}
-      />
+      <SearchBarProvider value={searchItem}>
+        <SearchBar
+          className="mb-3 w-50 form-control"
+          type="text"
+          placeholder="Search..."
+        />
+      </SearchBarProvider>
       {!articles.length ? (
         ""
       ) : (
         <>
-          <Articles articles={currentArticles} sortDate={sortDate} />
-          <Paginate
-            currentPage={currentPage}
-            articlesPerPage={articlesPerPage}
-            totalPage={articles.length}
-            changePage={changePage}
-          />
+          <ArticlesProvider
+            value={{
+              articles: currentArticles,
+              sortDate,
+            }}
+          >
+            <Articles />
+          </ArticlesProvider>
+          <PaginateProvider
+            value={{
+              currentPage,
+              articlesPerPage,
+              totalPage: articles.length,
+              changePage,
+            }}
+          >
+            <Paginate
+              articlesPerPage={articlesPerPage}
+              totalPage={articles.length}
+            />
+          </PaginateProvider>
         </>
       )}
     </div>
